@@ -1,4 +1,9 @@
+import 'package:cache/cache.dart';
+import 'package:meta/meta.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import './models/user.dart' as UserModel;
 
 /// {@template auth_failure}
 /// Thrown during the auth process if a failure occurs.
@@ -169,5 +174,57 @@ class AuthFailure {
       }
     }
     return const AuthFailure();
+  }
+}
+/// Thrown during the logout process if a failure occurs.
+class LogOutFailure implements Exception {}
+
+/// {@temaplate authentication_repository}
+/// Repository which manages user authentication.
+/// {@endtemplate}
+class AuthenticationRepository{
+  /// {@macro authentication_repository}
+  AuthenticationRepository({
+    CacheClient? cache,
+    SupabaseClient? supabaseClient,
+    GoogleSignIn? googleSignIn,
+  })  : _cache = cache ?? CacheClient(),
+        _supabaseClient = supabaseClient ?? Supabase.instance.client,
+        _googleSignIn = googleSignIn ?? GoogleSignIn.standard();
+
+  final CacheClient _cache;
+  final SupabaseClient _supabaseClient;
+  final GoogleSignIn _googleSignIn;
+
+
+  /// Whether or not the current environment is web
+  /// Should only be overridden for testing purposes. Otherwise,
+  /// defaults to [kIsWeb]
+  @visibleForTesting
+  bool isWeb = kIsWeb;
+
+  /// User cache KEy
+  /// Should only be used for testing purposes.
+  @visibleForTesting
+  static const userCacheKey = '__user_cache_key__';
+
+  /// Stream of [User] which will emit the current user when
+  /// the authentication state changes.
+  ///
+  /// Emits [User.empty] if the user is not authenticated.
+  Stream<UserModel.User> get user {
+    return _supabaseClient.auth.onAuthStateChange.map((authState){
+      final user = authState.session == null ? UserModel.User.empty : authState.toUser;
+      _cache.write(key: userCacheKey, value: user);
+      return user;
+    });
+  }
+}
+
+extension on AuthState {
+  /// Maps the [AuthState] to a [User] object.
+  UserModel.User get toUser {
+    User user = session!.user;
+    return UserModel.User(id: user.id, email: user.email, name: user.email!.split('@')[0]);
   }
 }
