@@ -1,3 +1,3 @@
 # flutter_supabase_bloc
 
-A new Flutter project.
+A flutter project to learn Flutter Bloc (https://bloclibrary.dev) by implementing a user login with supabase backend.
