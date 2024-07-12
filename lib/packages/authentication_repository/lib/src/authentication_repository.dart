@@ -252,6 +252,19 @@ class AuthenticationRepository{
     }
   }
 
+  /// SIgns out the currnet user which will emit 
+  /// [UserModel.User.empty] from the [user] Stream.
+  /// 
+  /// Throws a [LogOutFailure] if an exception occurs.
+  Future<void> logOut() async {
+    try {
+      await _supabaseClient.auth.signOut();
+      await _googleSignIn.signOut();
+    } on AuthException catch (_) {
+      throw LogOutFailure();
+    }
+  }
+
 }
 
 extension on AuthState {
