@@ -239,6 +239,19 @@ class AuthenticationRepository{
     }
   }
 
+  /// Sign in with the provided [email] and [password]
+  /// 
+  /// Throws a [AuthFailure] if an exception occurs.
+  Future<void> logInWithEmailAndPassword({required String email, required String password}) async {
+    try {
+      await _supabaseClient.auth.signInWithPassword(email: email, password: password);
+    } on AuthException catch (e) {
+      throw AuthFailure.fromException(e);
+    } catch (_) {
+      throw const AuthFailure();
+    }
+  }
+
 }
 
 extension on AuthState {
