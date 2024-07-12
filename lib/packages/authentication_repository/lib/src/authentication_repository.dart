@@ -219,6 +219,13 @@ class AuthenticationRepository{
       return user;
     });
   }
+
+  /// Returns the current cached user
+  /// Defaults to [User.empty] if no user is cached.
+  UserModel.User get currentUser {
+    return _cache.read(key: userCacheKey) ?? UserModel.User.empty;
+  }
+
 }
 
 extension on AuthState {
