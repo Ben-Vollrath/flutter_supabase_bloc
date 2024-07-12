@@ -208,10 +208,10 @@ class AuthenticationRepository{
   @visibleForTesting
   static const userCacheKey = '__user_cache_key__';
 
-  /// Stream of [User] which will emit the current user when
+  /// Stream of [UserModel.User] which will emit the current user when
   /// the authentication state changes.
   ///
-  /// Emits [User.empty] if the user is not authenticated.
+  /// Emits [UserModel.User.empty] if the user is not authenticated.
   Stream<UserModel.User> get user {
     return _supabaseClient.auth.onAuthStateChange.map((authState){
       final user = authState.session == null ? UserModel.User.empty : authState.toUser;
@@ -221,7 +221,7 @@ class AuthenticationRepository{
   }
 
   /// Returns the current cached user
-  /// Defaults to [User.empty] if no user is cached.
+  /// Defaults to [UserModel.User.empty] if no user is cached.
   UserModel.User get currentUser {
     return _cache.read(key: userCacheKey) ?? UserModel.User.empty;
   }
