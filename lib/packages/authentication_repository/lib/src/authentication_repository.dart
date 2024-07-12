@@ -226,6 +226,19 @@ class AuthenticationRepository{
     return _cache.read(key: userCacheKey) ?? UserModel.User.empty;
   }
 
+  /// Create a new user with the provided [email] and [password]
+  /// 
+  /// Throws a [AuthFailure] if an exception occurs.
+  Future<void> signUp({required String email, required String password}) async {
+    try {
+      await _supabaseClient.auth.signUp(email: email, password: password);
+    } on AuthException catch (e) {
+      throw AuthFailure.fromException(e);
+    } catch (_) {
+      throw const AuthFailure();
+    }
+  }
+
 }
 
 extension on AuthState {
