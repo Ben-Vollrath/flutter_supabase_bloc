@@ -186,14 +186,14 @@ class AuthenticationRepository{
   /// {@macro authentication_repository}
   AuthenticationRepository({
     CacheClient? cache,
-    GoTrueClient? supabaseAuthClient,
+    GoTrueClient? supabaseAuth,
     GoogleSignIn? googleSignIn,
   })  : _cache = cache ?? CacheClient(),
-        _supabaseAuthClient = supabaseAuthClient ?? Supabase.instance.client.auth,
+        _supabaseAuth = supabaseAuth ?? Supabase.instance.client.auth,
         _googleSignIn = googleSignIn ?? GoogleSignIn.standard();
 
   final CacheClient _cache;
-  final GoTrueClient _supabaseAuthClient;
+  final GoTrueClient _supabaseAuth;
   final GoogleSignIn _googleSignIn;
 
 
@@ -213,7 +213,7 @@ class AuthenticationRepository{
   ///
   /// Emits [UserModel.User.empty] if the user is not authenticated.
   Stream<UserModel.User> get user {
-    return _supabaseAuthClient.onAuthStateChange.map((authState){
+    return _supabaseAuth.onAuthStateChange.map((authState){
       final user = authState.session == null ? UserModel.User.empty : authState.toUser;
       _cache.write(key: userCacheKey, value: user);
       return user;
@@ -231,7 +231,7 @@ class AuthenticationRepository{
   /// Throws a [AuthFailure] if an exception occurs.
   Future<void> signUp({required String email, required String password}) async {
     try {
-      await _supabaseAuthClient.signUp(email: email, password: password);
+      await _supabaseAuth.signUp(email: email, password: password);
     } on AuthException catch (e) {
       throw AuthFailure.fromException(e);
     } catch (_) {
@@ -256,7 +256,7 @@ class AuthenticationRepository{
         throw 'No ID Token found.';
       }
 
-      await _supabaseAuthClient.signInWithIdToken(
+      await _supabaseAuth.signInWithIdToken(
       provider: OAuthProvider.google,
       idToken: idToken,
       accessToken: accessToken,
@@ -273,7 +273,7 @@ class AuthenticationRepository{
   /// Throws a [AuthFailure] if an exception occurs.
   Future<void> logInWithEmailAndPassword({required String email, required String password}) async {
     try {
-      await _supabaseAuthClient.signInWithPassword(email: email, password: password);
+      await _supabaseAuth.signInWithPassword(email: email, password: password);
     } on AuthException catch (e) {
       throw AuthFailure.fromException(e);
     } catch (_) {
@@ -287,7 +287,7 @@ class AuthenticationRepository{
   /// Throws a [LogOutFailure] if an exception occurs.
   Future<void> logOut() async {
     try {
-      await _supabaseAuthClient.signOut();
+      await _supabaseAuth.signOut();
       await _googleSignIn.signOut();
     } on AuthException catch (_) {
       throw LogOutFailure();
