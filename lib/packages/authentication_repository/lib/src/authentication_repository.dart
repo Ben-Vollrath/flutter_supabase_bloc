@@ -239,6 +239,35 @@ class AuthenticationRepository{
     }
   }
 
+  /// Signs in with Google
+  /// 
+  /// Throws a [AuthFailure] if an exception occurs.
+  Future<void> logInWithGoogle() async {
+    try{
+      final googleUser = await _googleSignIn.signIn();
+      final googleAuth = await googleUser!.authentication;
+      final accessToken = googleAuth.accessToken;
+      final idToken = googleAuth.idToken;
+
+      if (accessToken == null) {
+        throw 'No Access Token found.';
+      }
+      if (idToken == null) {
+        throw 'No ID Token found.';
+      }
+
+      await _supabaseClient.auth.signInWithIdToken(
+      provider: OAuthProvider.google,
+      idToken: idToken,
+      accessToken: accessToken,
+      );
+    } on AuthException catch (e) {
+      throw AuthFailure.fromException(e);
+    } catch (_) {
+      throw const AuthFailure();
+    }
+  }
+
   /// Sign in with the provided [email] and [password]
   /// 
   /// Throws a [AuthFailure] if an exception occurs.
