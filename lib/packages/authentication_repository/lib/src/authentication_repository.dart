@@ -8,7 +8,7 @@ import './models/user.dart' as UserModel;
 /// {@template auth_failure}
 /// Thrown during the auth process if a failure occurs.
 /// {@endtemplate}
-class AuthFailure {
+class AuthFailure implements Exception{
   /// The associated error message.
   final String message;
 
