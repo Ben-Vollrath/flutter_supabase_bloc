@@ -46,6 +46,40 @@ void main(){
       expect(AuthenticationRepository.new, isNot(throwsException));
     });
 
+
+    group('signUp', () {
+      setUp(() {
+        when(
+          () => supabaseAuth.signUp(
+            email: email, 
+            password: password
+            )
+          ).thenAnswer((_) async => Future.value(MockAuthResponse()));
+      });
+
+      test('calls signUp on SupabaseAuth', () async {
+        await authenticationRepository.signUp(email: email, password: password);
+        verify(() => supabaseAuth.signUp(email: email, password: password)).called(1);
+      });
+
+      test('succeeds when signUp on SupabaseAuth succeeds', () async {
+        expect(
+          authenticationRepository.signUp(email: email, password: password),
+          completes
+        );
+      });
+
+      test ('throws AuthFailure when signUp on SupabaseAuth fails', () async {
+        when(() => supabaseAuth.signUp(email: email, password: password))
+          .thenThrow(Exception());
+        expect(
+          authenticationRepository.signUp(email: email, password: password),
+          throwsA(isA<AuthFailure>())
+        );
+      });
+
+    });
+
   });
 
 }
