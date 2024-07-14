@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "856641808001",
+    "project_id": "supabase-flutter-bloc",
+    "storage_bucket": "supabase-flutter-bloc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:856641808001:android:95c4b5706f2ca72f8b0f80",
+        "android_client_info": {
+          "package_name": "com.example.flutter_supabase_bloc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "856641808001-dbas64vb4ljplk9j6litpn1caj56mqft.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvcIVczs7adfmREUke5RFlUl0f1EcazXM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "856641808001-dbas64vb4ljplk9j6litpn1caj56mqft.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
