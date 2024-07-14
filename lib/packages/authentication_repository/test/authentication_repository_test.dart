@@ -114,5 +114,34 @@ void main() {
             throwsA(isA<AuthFailure>()));
       });
     });
+ 
+    group('logInWithEmailAndPassword', () {
+      setUp(() {
+        when(() => supabaseAuth.signInWithPassword(email: email, password: password))
+            .thenAnswer((_) async => Future.value(MockAuthResponse()));
+      });
+
+      test('calls signIn on SupabaseAuth', () async {
+        await authenticationRepository.logInWithEmailAndPassword(
+            email: email, password: password);
+        verify(() => supabaseAuth.signInWithPassword(email: email, password: password))
+            .called(1);
+      });
+
+      test('succeeds when signIn on SupabaseAuth succeeds', () async {
+        expect(authenticationRepository.logInWithEmailAndPassword(
+            email: email, password: password), completes);
+      });
+
+      test('throws AuthFailure when signIn on SupabaseAuth fails', () async {
+        when(() => supabaseAuth.signInWithPassword(email: email, password: password))
+            .thenThrow(Exception());
+        expect(authenticationRepository.logInWithEmailAndPassword(
+            email: email, password: password), throwsA(isA<AuthFailure>()));
+      });
+    });
+
   });
+
+
 }
