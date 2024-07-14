@@ -21,6 +21,7 @@ dependencies:
   equatable: ^2.0.5
   font_awesome_flutter: ^10.1.0
   formz: ^0.7.0
+  flow_builder: ^0.0.9
 
 dev_dependencies:
   flutter_test:
