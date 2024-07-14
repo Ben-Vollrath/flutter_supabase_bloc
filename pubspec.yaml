@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  supabase_flutter: ^2.5.7
+  google_sign_in: ^6.1.0
 
 dev_dependencies:
   flutter_test:
