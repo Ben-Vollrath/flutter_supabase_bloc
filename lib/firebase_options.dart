@@ -59,4 +59,5 @@ class DefaultFirebaseOptions {
     projectId: 'supabase-flutter-bloc',
     storageBucket: 'supabase-flutter-bloc.appspot.com',
   );
+
 }
