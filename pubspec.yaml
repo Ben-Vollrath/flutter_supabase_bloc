@@ -9,6 +9,8 @@ environment:
 dependencies:
   authentication_repository:
     path: packages/authentication_repository
+  form_inputs:
+    path: packages/form_inputs
   flutter:
     sdk: flutter
   supabase_flutter: ^2.5.7
