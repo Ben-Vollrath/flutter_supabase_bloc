@@ -7,6 +7,8 @@ environment:
   sdk: '>=3.3.4 <4.0.0'
 
 dependencies:
+  authentication_repository:
+    path: packages/authentication_repository
   flutter:
     sdk: flutter
   supabase_flutter: ^2.5.7
