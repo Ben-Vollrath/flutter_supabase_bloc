@@ -5,6 +5,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 
+const _mockUserID = "mock-user-id";
+const _mockEmail = "mock-email";
+
 class MockCacheClient extends Mock implements CacheClient {}
 
 class MockSupabaseAuth extends Mock implements supabase.GoTrueClient {}
@@ -17,6 +20,10 @@ class MockGoogleSignInAccount extends Mock implements GoogleSignInAccount {}
 
 class MockAuthResponse extends Mock implements supabase.AuthResponse {}
 
+class MockAuthState extends Mock implements supabase.AuthState {}
+
+class MockAuthSession extends Mock implements supabase.Session {}
+
 class MockGoogleSignInAuthentication extends Mock
     implements GoogleSignInAuthentication {}
 
@@ -25,6 +32,11 @@ void main() {
 
   const email = "test@gmail.com";
   const password = "securepassword";
+    const user = User(
+    id: _mockUserID,
+    email: _mockEmail,
+    name: _mockEmail,
+  );
 
   group('AuthenticationRepository', () {
     late CacheClient cacheClient;
@@ -162,6 +174,39 @@ void main() {
       });
     });
 
+    group('user', () {
+      
+      test('emits User.empty when no user is signed in', () async{
+        when(() => supabaseAuth.onAuthStateChange).thenAnswer((_) => Stream.value(MockAuthState()));
+        await expectLater(
+          authenticationRepository.user,
+           emitsInOrder(const <User>[User.empty]),
+        );
+      });
+
+      test('emits User when user is signed in', () async{
+        final supabaseUser = MockGoTrueClientUser();
+        when(() => supabaseUser.id).thenReturn(_mockUserID);
+        when(() => supabaseUser.email).thenReturn(_mockEmail);
+        final authSession = MockAuthSession();
+        when(() => authSession.user).thenReturn(supabaseUser);
+        final mockAuthState = MockAuthState();
+        when(() => mockAuthState.session).thenReturn(authSession);
+        when(() => supabaseAuth.onAuthStateChange).thenAnswer((_) => Stream.value(mockAuthState));
+
+        await expectLater(
+          authenticationRepository.user,
+          emitsInOrder(const <User>[user]),
+        );
+        verify(
+          () => cacheClient.write(
+            key: AuthenticationRepository.userCacheKey,
+            value: user,
+          ),
+        ).called(1);        
+      });
+
+    });
   });
 
 
