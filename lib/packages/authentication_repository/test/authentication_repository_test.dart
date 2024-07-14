@@ -141,6 +141,27 @@ void main() {
       });
     });
 
+    group('logOut', () {
+      setUp(() {
+        when(() => supabaseAuth.signOut()).thenAnswer((_) async => Future.value());
+        when(() => googleSignIn.signOut()).thenAnswer((_) async => Future.value(MockGoogleSignInAccount()));
+      });
+
+      test('calls signOut on SupabaseAuth', () async {
+        await authenticationRepository.logOut();
+        verify(() => supabaseAuth.signOut()).called(1);
+      });
+
+      test('succeeds when signOut on SupabaseAuth succeeds', () async {
+        expect(authenticationRepository.logOut(), completes);
+      });
+
+      test('throws LogOutFailure when signOut on SupabaseAuth fails', () async {
+        when(() => supabaseAuth.signOut()).thenThrow(Exception());
+        expect(authenticationRepository.logOut(), throwsA(isA<LogOutFailure>()));
+      });
+    });
+
   });
 
 
