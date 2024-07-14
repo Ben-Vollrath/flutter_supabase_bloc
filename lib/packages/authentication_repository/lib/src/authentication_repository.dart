@@ -289,7 +289,7 @@ class AuthenticationRepository{
     try {
       await _supabaseAuth.signOut();
       await _googleSignIn.signOut();
-    } on AuthException catch (_) {
+    } catch (_) {
       throw LogOutFailure();
     }
   }
