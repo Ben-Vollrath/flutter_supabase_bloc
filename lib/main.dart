@@ -5,6 +5,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_supabase_bloc/firebase_options.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'app/view/app.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //Bloc.observer = const AppBlocObserver();
@@ -21,20 +23,5 @@ Future<void> main() async {
   final authenticationRepository = AuthenticationRepository();
   await authenticationRepository.user.first;
 
-  runApp(const MainApp());
-}
-
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
-    );
-  }
+  runApp(App(authenticationRepository: authenticationRepository));
 }
